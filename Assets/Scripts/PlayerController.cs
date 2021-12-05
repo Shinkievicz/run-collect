@@ -7,9 +7,11 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour
 {
     public Transform pla;
+    public GameObject grob;
+    public int countOn= 0;
     public int scores = 0;
     public Text text;
-    internal float speed = 4f;
+    internal float speed = 8f;
     float arrowSpeed = 500f;
     public float vertical = 50;
     float curPos;
@@ -30,9 +32,9 @@ public class PlayerController : MonoBehaviour
 
          foreach (Transform child in pla)
          {
-             if (child.tag == "Enemy")
+             if (child.tag == "Ally")
              {
-                Debug.Log("Enemy");
+             //   Debug.Log("Enemy");
                  Children.Add(child.gameObject);
              }
          }
@@ -41,7 +43,14 @@ public class PlayerController : MonoBehaviour
         {
             Children[i].SetActive(false);
         }
-        
+
+        for (int i = 0; i < Children.Count; i++)
+        {
+            if (Children[i].activeSelf)
+            {
+                countOn = countOn + 1;
+            }
+        }
 
 
     }
@@ -130,7 +139,27 @@ public class PlayerController : MonoBehaviour
     {
         text.text = scores.ToString();
     }
-    public void TutnOnAlly()
+
+    public void TurnOffFromEnemy(int num)
+    {
+
+        for (int i = countOn; i > 0; i--)
+        {
+
+            if (Children[i].activeSelf)
+            {
+
+                Children[i].SetActive(false);
+                Instantiate(grob, new Vector3(i * 2.0F, 0, 0), Quaternion.identity);
+                Instantiate(grob, new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z), Quaternion.identity);
+                num--;
+                num--;
+                if (num == 0)
+                { break; }
+            }
+        }
+    }
+    public void TurnOnAlly()
     {
         ///pla.transform.position = gameObject.transform.position;
 
