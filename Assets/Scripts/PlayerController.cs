@@ -6,6 +6,11 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
+    public GameObject sphere;
+    public float spawn_delay = 0.005f;
+    public float spawn_radius = 1f;
+
+
     public Transform pla;
     public GameObject grob;
     public int countOn= 0;
@@ -20,7 +25,7 @@ public class PlayerController : MonoBehaviour
     float startMousePos;
     private Vector3 moveVector;
     bool _isMouseDown;
-    bool _isAroow;
+    bool _isArrow;
     [SerializeField] private float _speed = 10f;
     float delta;
     public GameObject arrow;
@@ -51,6 +56,7 @@ public class PlayerController : MonoBehaviour
                 countOn = countOn + 1;
             }
         }
+        pla.transform.position = sphere.transform.position;
 
 
     }
@@ -69,7 +75,7 @@ public class PlayerController : MonoBehaviour
         var pos = new Vector3(transform.position.x, transform.position.y+1, transform.position.z);
         //if (Input.GetKeyDown(KeyCode.Space))
         //
-        if (_isAroow == true)
+        if (_isArrow == true)
             
         {
             Instantiate(arrow, pos, Quaternion.identity);
@@ -77,7 +83,7 @@ public class PlayerController : MonoBehaviour
             arrow.GetComponent<Rigidbody>().AddForce(transform.forward * arrowSpeed); // adjusted speed
             
         }
-        _isAroow = false;
+        _isArrow = false;
 
     }
 
@@ -86,13 +92,14 @@ public class PlayerController : MonoBehaviour
 
       //  rb.velocity = (transform.forward * vertical) * speed * Time.deltaTime;
         transform.position += Vector3.forward * Time.deltaTime * speed;
+        pla.transform.position += Vector3.forward * Time.deltaTime * speed;
     }
 
     private void MouseSwipeControl()
     {
         if (Input.GetMouseButtonUp(0))
         {
-            _isAroow = true;
+            _isArrow = true;
         }
         if (Input.GetMouseButtonDown(0))
         {
@@ -116,18 +123,20 @@ public class PlayerController : MonoBehaviour
           moveVector.x = 0;
       }
     
-      if (Input.GetMouseButton(0))
-      {
-          _isMouseDown = true;
-          if (delta < 0)
-          {
-                transform.position = transform.position + new Vector3(delta  * Time.deltaTime / 100, 0, 0);
-          }
-          else if (delta > 0)
-          {
-                transform.position = transform.position - new Vector3(-delta * Time.deltaTime / 100, 0, 0);
-            }
-      }
+     if (Input.GetMouseButton(0))
+     {
+         _isMouseDown = true;
+         if (delta < 0 && transform.position.x > -2.5f)
+         {
+               transform.position = transform.position + new Vector3(delta * Time.deltaTime / 10, 0, 0);
+               pla.transform.position = sphere.transform.position + new Vector3(delta * Time.deltaTime / 10, 0, 0);
+           }
+         else if (delta > 0 && transform.position.x < 2.5f)
+         {
+               transform.position = transform.position - new Vector3(-delta * Time.deltaTime / 10, 0, 0);
+               pla.transform.position = sphere.transform.position - new Vector3(-delta * Time.deltaTime / 10, 0, 0);
+           }
+     }
     }
     public void SetForfce()
     {
@@ -167,11 +176,33 @@ public class PlayerController : MonoBehaviour
         {
             if (Children[i].activeSelf && !Children[i+1].activeSelf)
             {
+
                 Children[i+1].SetActive(true);
-                Children[i+1].transform.position = gameObject.transform.position;
+               // Vector3 V3 = transform.position = sphere.transform.position + UnityEngine.Random.insideUnitSphere * spawn_radius;
+
+              //  Children[i + 1].transform.position = sphere.transform.position + UnityEngine.Random.insideUnitSphere * spawn_radius;
+              //  Children[i + 1].transform.position = new Vector3(Children[i + 1].transform.position.x, sphere.transform.position.y, Children[i + 1].transform.position.z);
                 break;
             }
                 //Children[i].SetActive(false);
+        }
+
+        for (int i = 0; i < Children.Count; i++)
+        {
+            if (Children[i].activeSelf)
+            {
+                countOn = countOn + 1;
+            }
+        }
+
+        for (int i = 0; i < Children.Count; i++)
+        {
+            if (Children[i].activeSelf && !Children[i + 1].activeSelf)
+            {
+                Children[0].transform.position = sphere.transform.position;
+                Children[i+1].transform.position = new Vector3(Children[i].transform.position.x + 1, sphere.transform.position.y, sphere.transform.position.z);
+                Debug.Log("POPOPO");
+            }
         }
         // pla.SetActive(true);
     }
