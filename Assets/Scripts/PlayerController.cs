@@ -57,7 +57,20 @@ public class PlayerController : MonoBehaviour
             }
         }
         pla.transform.position = sphere.transform.position;
+        StartCoroutine(CoroutineSample());
 
+    }
+
+    private IEnumerator CoroutineSample()
+    {
+
+      //  while (countOn < 2)
+      //  {
+          //  Debug.Log("1111");
+            yield return new WaitUntil (()=>countOn < 2);
+          //  Debug.Log("22222");
+      //  }
+        Debug.Log("33333");
 
     }
 
@@ -157,12 +170,12 @@ public class PlayerController : MonoBehaviour
 
             if (Children[i].activeSelf)
             {
-
+          
                 Children[i].SetActive(false);
                 Instantiate(grob, new Vector3(i * 2.0F, 0, 0), Quaternion.identity);
                 Instantiate(grob, new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z), Quaternion.identity);
                 num--;
-                num--;
+               // num--;
                 if (num == 0)
                 { break; }
             }
@@ -178,32 +191,13 @@ public class PlayerController : MonoBehaviour
             {
 
                 Children[i+1].SetActive(true);
-               // Vector3 V3 = transform.position = sphere.transform.position + UnityEngine.Random.insideUnitSphere * spawn_radius;
 
-              //  Children[i + 1].transform.position = sphere.transform.position + UnityEngine.Random.insideUnitSphere * spawn_radius;
-              //  Children[i + 1].transform.position = new Vector3(Children[i + 1].transform.position.x, sphere.transform.position.y, Children[i + 1].transform.position.z);
+                 Children[i + 1].transform.position = sphere.transform.position + UnityEngine.Random.insideUnitSphere * spawn_radius;
+                 Children[i + 1].transform.position = new Vector3(Children[i + 1].transform.position.x, sphere.transform.position.y, Children[i + 1].transform.position.z);
                 break;
             }
-                //Children[i].SetActive(false);
         }
 
-        for (int i = 0; i < Children.Count; i++)
-        {
-            if (Children[i].activeSelf)
-            {
-                countOn = countOn + 1;
-            }
-        }
-
-        for (int i = 0; i < Children.Count; i++)
-        {
-            if (Children[i].activeSelf && !Children[i + 1].activeSelf)
-            {
-                Children[0].transform.position = sphere.transform.position;
-                Children[i+1].transform.position = new Vector3(Children[i].transform.position.x + 1, sphere.transform.position.y, sphere.transform.position.z);
-                Debug.Log("POPOPO");
-            }
-        }
         // pla.SetActive(true);
     }
     void OnCollisionEnter(Collision collision)
